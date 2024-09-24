@@ -97,6 +97,7 @@ export function AddPost() {
           size="icon"
           className="rounded-full"
           onClick={() => setDialogOpen(true)}
+          aria-label="Fazer Postagem" // Adicionado atributo aria-label
         >
           <Plus size={40} />
         </Button>
@@ -180,7 +181,7 @@ export function AddPost() {
                 <Button
                   variant="outline"
                   size="default"
-                  className="rounded-full "
+                  className="rounded-full"
                 >
                   Cancelar
                 </Button>
@@ -188,7 +189,7 @@ export function AddPost() {
               <Button
                 variant="outline"
                 size="default"
-                className="rounded-full bg-green-500 hover:bg-green-600 "
+                className="rounded-full bg-green-500 hover:bg-green-600"
                 type="submit"
               >
                 Enviar

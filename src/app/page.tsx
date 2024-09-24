@@ -8,6 +8,7 @@ const Page = () => {
       <Header />
       <BlogPostsPreview />
       <Footer />
+      <div>teste</div>
     </div>
   )
 }

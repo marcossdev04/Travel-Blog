@@ -3,14 +3,14 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "imagedelivery.net",
+        protocol: 'https',
+        hostname: 'imagedelivery.net',
       },
     ],
   },
   redirects: async () => {
-    return [];
+    return []
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

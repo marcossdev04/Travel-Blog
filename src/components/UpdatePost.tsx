@@ -1,18 +1,5 @@
-import { useForm } from 'react-hook-form'
+import { SquarePen } from 'lucide-react'
 import { Button } from './ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'react-toastify'
-import { api } from '../../api/api'
-import { z } from 'zod'
-import { Input } from './ui/input'
 import {
   Dialog,
   DialogClose,
@@ -21,10 +8,26 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Plus } from 'lucide-react'
-import { useState } from 'react'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { useState, useEffect } from 'react'
+import { toast } from 'react-toastify'
+import { api } from '../../api/api'
 import { queryClient } from '../../api/queryClient'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { Input } from './ui/input'
 
+interface Props {
+  postId: string
+}
 const formSchema = z.object({
   title: z.string().min(2, {
     message: 'Mínimo de 2 caracteres.',
@@ -41,8 +44,10 @@ const formSchema = z.object({
 })
 type FormData = z.infer<typeof formSchema>
 
-export function AddPost() {
+export function UpdatePost({ postId }: Props) {
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [, setDefaultValues] = useState<FormData | null>(null)
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,7 +58,31 @@ export function AddPost() {
     },
   })
 
-  const handleCreatePost = async (data: FormData) => {
+  useEffect(() => {
+    async function fetchPost() {
+      try {
+        const response = await api.get(`/posts/${postId}`)
+        const postData = response.data
+
+        form.reset({
+          title: postData.title,
+          resume: postData.resume,
+          content: postData.content,
+          author: postData.author,
+        })
+
+        setDefaultValues(postData)
+      } catch (error) {
+        toast.error('Erro ao carregar os dados da postagem.')
+      }
+    }
+
+    if (dialogOpen) {
+      fetchPost()
+    }
+  }, [dialogOpen, postId, form])
+
+  async function handleUpdatePost(data: FormData) {
     try {
       const today = new Date()
       const formattedDate = new Intl.DateTimeFormat('pt-BR', {
@@ -67,16 +96,17 @@ export function AddPost() {
         created_at: formattedDate,
       }
 
-      await api.post('/posts', postData)
+      await api.put(`/posts/${postId}`, postData)
       await queryClient.refetchQueries(['getPosts'])
-      toast.success('Postagem adicionada com sucesso!', {
+      setDialogOpen(false)
+      toast.success('Postagem editada com sucesso!', {
         position: 'bottom-right',
         closeOnClick: true,
         theme: 'dark',
       })
-      setDialogOpen(false)
     } catch (error) {
-      toast.error('Erro ao adicionar a postagem ', {
+      setDialogOpen(false)
+      toast.error('Erro ao editar a postagem ', {
         position: 'bottom-right',
         closeOnClick: true,
         theme: 'dark',
@@ -84,33 +114,28 @@ export function AddPost() {
     }
   }
 
-  const handleCloseDialog = () => {
-    form.reset()
-    setDialogOpen(false)
-  }
-
   return (
-    <Dialog open={dialogOpen} onOpenChange={handleCloseDialog}>
-      <div className="flex justify-end">
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <div>
         <Button
           variant="outline"
-          size="icon"
-          className="rounded-full"
+          size="miniIcon"
+          className="rounded-full border-none"
           onClick={() => setDialogOpen(true)}
         >
-          <Plus size={40} />
+          <SquarePen />
         </Button>
       </div>
       <DialogContent className="max-h-[95%] overflow-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Fazer Postagem</DialogTitle>
+          <DialogTitle>Editar Postagem</DialogTitle>
           <DialogDescription>
-            Faça a postagem da sua nova viagem.
+            Altere os campos abaixo para modificar a postagem.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleCreatePost)}
+            onSubmit={form.handleSubmit(handleUpdatePost)}
             className="space-y-8"
           >
             <FormField

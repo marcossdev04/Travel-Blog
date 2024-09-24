@@ -1,5 +1,3 @@
-import { config } from '../../../config'
-
 export type FontMap = Record<
   string,
   {
@@ -15,17 +13,17 @@ const loadFontsRaw = async (): Promise<FontMap> => {
   return {
     'inter-semibold': {
       name: 'Inter',
-      data: await fetch(
-        new URL('fonts/Inter-SemiBold.ttf', config.baseUrl),
-      ).then((res) => res.arrayBuffer()),
+      data: await fetch(new URL('fonts/Inter-SemiBold.ttf')).then((res) =>
+        res.arrayBuffer(),
+      ),
       weight: 600,
       style: 'normal',
     },
     'inter-regular': {
       name: 'Inter',
-      data: await fetch(
-        new URL('fonts/Inter-Regular.ttf', config.baseUrl),
-      ).then((res) => res.arrayBuffer()),
+      data: await fetch(new URL('fonts/Inter-Regular.ttf')).then((res) =>
+        res.arrayBuffer(),
+      ),
       weight: 400,
       style: 'normal',
     },

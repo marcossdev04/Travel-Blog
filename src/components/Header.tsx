@@ -6,7 +6,6 @@ import {
   SheetHeader,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { config } from '@/config'
 import { cn } from '@/lib/utils'
 import { Menu } from 'lucide-react'
 import Link from 'next/link'
@@ -77,7 +76,7 @@ export const Header: FunctionComponent = () => {
     <section className="mb-12 mt-8 flex items-center justify-between md:mt-16">
       <Link href="/">
         <h1 className="text-4xl font-bold leading-tight tracking-tighter md:text-6xl">
-          {config.blog.name}
+          Travel.
         </h1>
       </Link>
       <Navigation />

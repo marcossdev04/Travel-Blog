@@ -15,10 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <QueryClientProvider client={queryClient}>
-      <html lang="en">
+      <html lang="pt">
         <body
           className={cn(
-            'm-auto min-h-screen max-w-6xl bg-background font-sans antialiased',
+            'm-auto min-h-screen bg-background font-sans antialiased',
             fontSans.variable,
           )}
         >
